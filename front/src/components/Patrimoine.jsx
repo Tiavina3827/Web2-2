@@ -87,7 +87,7 @@ function Patrimoine() {
                     <p style={{marginLeft:"20%"}}>{patrimoineValue} </p>
                 </div>
             )}
-            <div style={{ position: 'absolute', bottom: '20px', width: '80%', margin: '0 auto', textAlign: 'center' }}>
+            <div style={{  bottom: '20px', width: '80%', margin: '0 auto', textAlign: 'center' }}>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' , flexDirection:"column",alignItems:"center",left:"40%"}}>
                     <div>
                         <label htmlFor="start-date">Date de début :</label>

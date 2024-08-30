@@ -1,113 +1,222 @@
-import React, { useState, useEffect } from "react";
-import PossessionForm from "./PossessionForm"; // Assure-toi que le chemin est correct
-import { Table, Button } from 'react-bootstrap'; // Import des composants Bootstrap
+import React, { useState, useEffect } from 'react';
+import { Table, Button, Form, Modal } from 'react-bootstrap';
+import '../../bootstrap-5.0.2-dist/css/bootstrap.min.css';
 
 function Possessions() {
     const [possessions, setPossessions] = useState([]);
-    const [editPossession, setEditPossession] = useState(null); // Pour stocker la possession en cours d'édition
-    const [isCreating, setIsCreating] = useState(false); // Pour déterminer si nous créons une nouvelle possession
+    const [showModal, setShowModal] = useState(false);
+    const [modalMode, setModalMode] = useState('create');
+    const [selectedPossession, setSelectedPossession] = useState(null);
+    const [formData, setFormData] = useState({
+        possesseur: '',
+        libelle: '',
+        valeur: '',
+        dateDebut: '',
+        dateFin: '',
+        tauxAmortissement: '',
+        jour: '',
+        valeurConstante: ''
+    });
 
     useEffect(() => {
         fetch('http://localhost:3001/possessions')
-            .then(res => res.json())
+            .then(response => response.json())
             .then(data => setPossessions(data))
-            .catch(err => console.error(err));
+            .catch(error => console.error('Erreur:', error));
     }, []);
 
-    const handleEditClick = (possession) => {
-        setEditPossession(possession); // Active le mode édition
+    const handleShowModal = (mode, possession = null) => {
+        setModalMode(mode);
+        setSelectedPossession(possession);
+        setFormData(possession || {
+            possesseur: '',
+            libelle: '',
+            valeur: '',
+            dateDebut: '',
+            dateFin: '',
+            tauxAmortissement: '',
+            jour: '',
+            valeurConstante: ''
+        });
+        setShowModal(true);
     };
 
-    const handleSave = (possession) => {
-        const method = editPossession ? 'PUT' : 'POST';
-        const url = editPossession
-            ? `http://localhost:3001/possession/${possession.libelle}/update`
-            : 'http://localhost:3001/possession/create';
+    const handleCloseModal = () => setShowModal(false);
 
-        fetch(url, {
-            method,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(possession),
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (editPossession) {
-                    setPossessions(possessions.map(p => p.libelle === data.libelle ? data : p));
-                } else {
-                    setPossessions([...possessions, data]);
-                }
-                setEditPossession(null); // Désactive le mode édition
-                setIsCreating(false); // Désactive le mode création
+    const handleFormChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prevState => ({ ...prevState, [name]: value }));
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (modalMode === 'create') {
+            fetch('http://localhost:3001/possession/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
             })
-            .catch(err => console.error(err));
+                .then(response => response.json())
+                .then(newPossession => {
+                    setPossessions([...possessions, newPossession]);
+                    handleCloseModal();
+                })
+                .catch(error => console.error('Erreur:', error));
+        } else if (modalMode === 'update') {
+            fetch(`http://localhost:3001/possession/${selectedPossession.libelle}/update`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            })
+                .then(response => response.json())
+                .then(updatedPossession => {
+                    setPossessions(possessions.map(p => p.libelle === updatedPossession.libelle ? updatedPossession : p));
+                    handleCloseModal();
+                })
+                .catch(error => console.error('Erreur:', error));
+        }
     };
 
-    const handleDeleteClick = (libelle) => {
+    const handleDelete = (libelle) => {
         fetch(`http://localhost:3001/possession/${libelle}/delete`, {
-            method: 'DELETE',
+            method: 'DELETE'
         })
             .then(() => {
                 setPossessions(possessions.filter(p => p.libelle !== libelle));
             })
-            .catch(err => console.error(err));
-    };
-
-    const handleCancel = () => {
-        setEditPossession(null); // Annule l'édition
-        setIsCreating(false); // Annule la création
-    };
-
-    const handleCreateClick = () => {
-        setIsCreating(true); // Active le mode création
+            .catch(error => console.error('Erreur:', error));
     };
 
     return (
-        <div className="possessions-container">
-            <h1 className="headText">Liste des possessions</h1>
-            {editPossession || isCreating ? (
-                <PossessionForm
-                    possession={editPossession}
-                    onSave={handleSave}
-                    onCancel={handleCancel}
-                />
-            ) : (
-                <div className="main">
-                    <Table striped bordered hover id="Table">
-                        <thead>
-                        <tr>
-                            <th>Libellé</th>
-                            <th>Valeur</th>
-                            <th>Date de début</th>
-                            <th>Date de fin</th>
-                            <th>Taux d'amortissement</th>
-                            <th>Jour</th>
-                            <th>Valeur constante</th>
-                            <th>Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {possessions.map((possession, index) => (
-                            <tr key={index}>
-                                <td>{possession.libelle}</td>
-                                <td>{possession.valeur}</td>
-                                <td>{new Date(possession.dateDebut).toLocaleDateString()}</td>
-                                <td>{possession.dateFin ? new Date(possession.dateFin).toLocaleDateString() : "N/A"}</td>
-                                <td>{possession.tauxAmortissement || "N/A"}</td>
-                                <td>{possession.jour || "N/A"}</td>
-                                <td>{possession.valeurConstante || "N/A"}</td>
-                                <td>
-                                    <Button variant="warning" onClick={() => handleEditClick(possession)}>Modifier</Button>
-                                    <Button variant="danger" onClick={() => handleDeleteClick(possession.libelle)}>Supprimer</Button>
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </Table>
-                    <Button className="add-button" variant="primary" onClick={handleCreateClick}>Ajouter une nouvelle possession</Button>
-                </div>
-            )}
+        <div className="container mt-4">
+            <h1>Gestion des Possessions</h1>
+            <Button variant="primary" onClick={() => handleShowModal('create')}>Ajouter une Possession</Button>
+            <Table striped bordered hover className="mt-3">
+                <thead>
+                <tr>
+                    <th>Possesseur</th>
+                    <th>Libellé</th>
+                    <th>Valeur</th>
+                    <th>Date Début</th>
+                    <th>Date Fin</th>
+                    <th>Taux Amortissement</th>
+                    <th>Jour</th>
+                    <th>Valeur Constante</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {possessions.map((possession, index) => (
+                    <tr key={index}>
+                        <td>{possession.possesseur}</td>
+                        <td>{possession.libelle}</td>
+                        <td>{possession.valeur}</td>
+                        <td>{possession.dateDebut || 'N/A'}</td>
+                        <td>{possession.dateFin || 'N/A'}</td>
+                        <td>{possession.tauxAmortissement}</td>
+                        <td>{possession.jour}</td>
+                        <td>{possession.valeurConstante}</td>
+                        <td>
+                            <Button variant="warning" onClick={() => handleShowModal('update', possession)}>Modifier</Button>
+                            <Button variant="danger" onClick={() => handleDelete(possession.libelle)} className="ml-2">Supprimer</Button>
+                        </td>
+                    </tr>
+                ))}
+                </tbody>
+            </Table>
+
+            {/* Modal pour Ajouter/Modifier une Possession */}
+            <Modal show={showModal} onHide={handleCloseModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>{modalMode === 'create' ? 'Ajouter une Possession' : 'Modifier une Possession'}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form onSubmit={handleSubmit}>
+                        <Form.Group controlId="formPossesseur">
+                            <Form.Label>Possesseur</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="possesseur"
+                                value={formData.possesseur}
+                                onChange={handleFormChange}
+                                required
+                            />
+                        </Form.Group>
+                        <Form.Group controlId="formLibelle">
+                            <Form.Label>Libellé</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="libelle"
+                                value={formData.libelle}
+                                onChange={handleFormChange}
+                                required
+                                readOnly={modalMode === 'update'}
+                            />
+                        </Form.Group>
+                        <Form.Group controlId="formValeur">
+                            <Form.Label>Valeur</Form.Label>
+                            <Form.Control
+                                type="number"
+                                name="valeur"
+                                value={formData.valeur}
+                                onChange={handleFormChange}
+                                required
+                            />
+                        </Form.Group>
+                        <Form.Group controlId="formDateDebut">
+                            <Form.Label>Date Début</Form.Label>
+                            <Form.Control
+                                type="date"
+                                name="dateDebut"
+                                value={formData.dateDebut}
+                                onChange={handleFormChange}
+                            />
+                        </Form.Group>
+                        <Form.Group controlId="formDateFin">
+                            <Form.Label>Date Fin</Form.Label>
+                            <Form.Control
+                                type="date"
+                                name="dateFin"
+                                value={formData.dateFin}
+                                onChange={handleFormChange}
+                            />
+                        </Form.Group>
+                        <Form.Group controlId="formTauxAmortissement">
+                            <Form.Label>Taux Amortissement</Form.Label>
+                            <Form.Control
+                                type="number"
+                                name="tauxAmortissement"
+                                value={formData.tauxAmortissement}
+                                onChange={handleFormChange}
+                                required
+                            />
+                        </Form.Group>
+                        <Form.Group controlId="formJour">
+                            <Form.Label>Jour</Form.Label>
+                            <Form.Control
+                                type="number"
+                                name="jour"
+                                value={formData.jour}
+                                onChange={handleFormChange}
+                                required
+                            />
+                        </Form.Group>
+                        <Form.Group controlId="formValeurConstante">
+                            <Form.Label>Valeur Constante</Form.Label>
+                            <Form.Control
+                                type="number"
+                                name="valeurConstante"
+                                value={formData.valeurConstante}
+                                onChange={handleFormChange}
+                                required
+                            />
+                        </Form.Group>
+                        <Button variant="primary" type="submit">
+                            {modalMode === 'create' ? 'Ajouter' : 'Mettre à jour'}
+                        </Button>
+                    </Form>
+                </Modal.Body>
+            </Modal>
         </div>
     );
 }
