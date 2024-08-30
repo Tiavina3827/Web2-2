@@ -1,0 +1,23 @@
+nav{
+    width: 80%;
+    height:30%;
+    padding:10px;
+    margin-left:7%;
+    display: flex;
+    justify-content: center;
+    gap: 30%;
+    align-items: center;
+    border-radius: 10px;
+}
+
+a{
+    color: gold;
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 10px;
+}
+a:hover{
+    transition: .9s ease-in-out;
+    font-weight: bold;
+    border: 1.5px solid gold;
+}
