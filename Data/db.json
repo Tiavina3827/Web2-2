@@ -1,0 +1,48 @@
+[
+  {
+    "model": "Personne",
+    "data": {
+      "nom": "John Doe"
+    }
+  },
+  {
+    "model": "Patrimoine",
+    "data": {
+      "possesseur": {
+        "nom": "John Doe"
+      },
+      "possessions": [
+        {
+          "possesseur": "John Doe",
+          "libelle": "écolage",
+          "valeur": "4000000",
+          "dateDebut": "",
+          "dateFin": "",
+          "tauxAmortissement": "4",
+          "jour": "3",
+          "valeurConstante": "300000"
+        },
+        {
+          "possesseur": "John Doe",
+          "libelle": "Maison",
+          "valeur": "3000000",
+          "dateDebut": "2024-08-07",
+          "dateFin": "2024-08-23",
+          "tauxAmortissement": "4",
+          "jour": "3",
+          "valeurConstante": "300000"
+        },
+        {
+          "possesseur": "John Doe",
+          "libelle": "Maison",
+          "valeur": "3000000",
+          "dateDebut": "",
+          "dateFin": "",
+          "tauxAmortissement": "4",
+          "jour": "3",
+          "valeurConstante": "300000"
+        }
+      ]
+    }
+  }
+]
