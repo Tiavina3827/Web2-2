@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import PossessionsTable from './PossessionTable';
+import { Container, Spinner, Alert } from 'react-bootstrap';
+import '../bootstrap-5.0.2-dist/css/bootstrap.min.css'
 
 function Possessions() {
     const [possessions, setPossessions] = useState([]);
@@ -99,21 +101,23 @@ function Possessions() {
             .catch(error => console.error('Erreur:', error));
     };
 
-    if (loading) return <p>Chargement...</p>;
-    if (error) return <p>{error}</p>;
+    if (loading) return <Container className="mt-4 text-center"><Spinner animation="border" /></Container>;
+    if (error) return <Container className="mt-4"><Alert variant="danger">{error}</Alert></Container>;
 
     return (
-        <PossessionsTable
-            possessions={possessions}
-            showModal={showModal}
-            modalMode={modalMode}
-            formData={formData}
-            handleShowModal={handleShowModal}
-            handleCloseModal={handleCloseModal}
-            handleFormChange={handleFormChange}
-            handleSubmit={handleSubmit}
-            handleClosePossession={handleClosePossession}
-        />
+        <Container className="mt-4">
+            <PossessionsTable
+                possessions={possessions}
+                showModal={showModal}
+                modalMode={modalMode}
+                formData={formData}
+                handleShowModal={handleShowModal}
+                handleCloseModal={handleCloseModal}
+                handleFormChange={handleFormChange}
+                handleSubmit={handleSubmit}
+                handleClosePossession={handleClosePossession}
+            />
+        </Container>
     );
 }
 
