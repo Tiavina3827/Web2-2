@@ -86,12 +86,16 @@ function Possessions() {
         }
     };
 
-    const handleDelete = (libelle) => {
-        fetch(`http://localhost:3001/possession/${libelle}/delete`, {
-            method: 'DELETE'
+    const handleClosePossession = (libelle) => {
+        const today = new Date().toISOString();
+        fetch(`http://localhost:3001/possession/${libelle}/update`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ dateFin: today })
         })
-            .then(() => {
-                setPossessions(possessions.filter(p => p.libelle !== libelle));
+            .then(response => response.json())
+            .then(updatedPossession => {
+                setPossessions(possessions.map(p => p.libelle === updatedPossession.libelle ? updatedPossession : p));
             })
             .catch(error => console.error('Erreur:', error));
     };
@@ -130,7 +134,7 @@ function Possessions() {
                         <td>{possession.valeurConstante || 'N/A'}</td>
                         <td>
                             <Button variant="warning" onClick={() => handleShowModal('update', possession)}>Modifier</Button>
-                            <Button variant="danger" onClick={() => handleDelete(possession.libelle)} className="ml-2">Supprimer</Button>
+                            <Button variant="secondary" onClick={() => handleClosePossession(possession.libelle)} className="ml-2">Clôturer</Button>
                         </td>
                     </tr>
                 ))}
