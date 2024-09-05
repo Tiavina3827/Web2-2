@@ -1,6 +1,5 @@
-import React from 'react';
 import { Table, Button, Form, Modal } from 'react-bootstrap';
-
+import '../bootstrap-5.0.2-dist/css/bootstrap.min.css'
 function PossessionsTable({
                               possessions,
                               showModal,
@@ -13,11 +12,11 @@ function PossessionsTable({
                               handleClosePossession
                           }) {
     return (
-        <div className="container mt-4">
-            <h1>Gestion des Possessions</h1>
+        <div>
+            <h1 className="text-center mb-4">Gestion des Possessions</h1>
             <Button variant="primary" onClick={() => handleShowModal('create')}>Ajouter une Possession</Button>
-            <Table striped bordered hover className="mt-3">
-                <thead>
+            <Table striped bordered hover responsive className="mt-3">
+                <thead className="thead-dark">
                 <tr>
                     <th>Possesseur</th>
                     <th>Libellé</th>
@@ -35,12 +34,12 @@ function PossessionsTable({
                     <tr key={index}>
                         <td>{possession.possesseur.nom}</td>
                         <td>{possession.libelle}</td>
-                        <td>{possession.valeur}</td>
+                        <td>{possession.valeur.toLocaleString()} XOF</td>
                         <td>{possession.dateDebut ? new Date(possession.dateDebut).toLocaleDateString() : 'N/A'}</td>
                         <td>{possession.dateFin ? new Date(possession.dateFin).toLocaleDateString() : 'N/A'}</td>
-                        <td>{possession.tauxAmortissement}</td>
+                        <td>{possession.tauxAmortissement}%</td>
                         <td>{possession.jour || 'N/A'}</td>
-                        <td>{possession.valeurConstante || 'N/A'}</td>
+                        <td>{possession.valeurConstante ? possession.valeurConstante.toLocaleString() : 'N/A'} XOF</td>
                         <td>
                             <Button variant="warning" onClick={() => handleShowModal('update', possession)}>Modifier</Button>
                             <Button variant="secondary" onClick={() => handleClosePossession(possession.libelle)} className="ml-2">Clôturer</Button>
@@ -107,7 +106,7 @@ function PossessionsTable({
                             />
                         </Form.Group>
                         <Form.Group controlId="formTauxAmortissement">
-                            <Form.Label>Taux Amortissement</Form.Label>
+                            <Form.Label>Taux Amortissement (%)</Form.Label>
                             <Form.Control
                                 type="number"
                                 name="tauxAmortissement"
