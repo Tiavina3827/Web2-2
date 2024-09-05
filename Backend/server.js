@@ -17,11 +17,11 @@ const saveData = () => {
     fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2));
 };
 
-app.get('/api/data', (req, res) => {
+app.get('/data', (req, res) => {
     res.json(data);
 });
 
-app.get('/api/data/0', (req, res) => {
+app.get('/data/0', (req, res) => {
     res.json(data[0]);
 });
 
