@@ -17,12 +17,21 @@ function Possessions() {
         jour: '',
         valeurConstante: ''
     });
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         fetch('http://localhost:3001/possessions')
             .then(response => response.json())
-            .then(data => setPossessions(data))
-            .catch(error => console.error('Erreur:', error));
+            .then(data => {
+                setPossessions(data);
+                setLoading(false);
+            })
+            .catch(error => {
+                setError('Erreur de chargement des possessions');
+                setLoading(false);
+                console.error('Erreur:', error);
+            });
     }, []);
 
     const handleShowModal = (mode, possession = null) => {
@@ -87,6 +96,9 @@ function Possessions() {
             .catch(error => console.error('Erreur:', error));
     };
 
+    if (loading) return <p>Chargement...</p>;
+    if (error) return <p>{error}</p>;
+
     return (
         <div className="container mt-4">
             <h1>Gestion des Possessions</h1>
@@ -108,14 +120,14 @@ function Possessions() {
                 <tbody>
                 {possessions.map((possession, index) => (
                     <tr key={index}>
-                        <td>{possession.possesseur}</td>
+                        <td>{possession.possesseur.nom}</td>
                         <td>{possession.libelle}</td>
                         <td>{possession.valeur}</td>
-                        <td>{possession.dateDebut || 'N/A'}</td>
-                        <td>{possession.dateFin || 'N/A'}</td>
+                        <td>{possession.dateDebut ? new Date(possession.dateDebut).toLocaleDateString() : 'N/A'}</td>
+                        <td>{possession.dateFin ? new Date(possession.dateFin).toLocaleDateString() : 'N/A'}</td>
                         <td>{possession.tauxAmortissement}</td>
-                        <td>{possession.jour}</td>
-                        <td>{possession.valeurConstante}</td>
+                        <td>{possession.jour || 'N/A'}</td>
+                        <td>{possession.valeurConstante || 'N/A'}</td>
                         <td>
                             <Button variant="warning" onClick={() => handleShowModal('update', possession)}>Modifier</Button>
                             <Button variant="danger" onClick={() => handleDelete(possession.libelle)} className="ml-2">Supprimer</Button>
@@ -198,7 +210,6 @@ function Possessions() {
                                 name="jour"
                                 value={formData.jour}
                                 onChange={handleFormChange}
-                                required
                             />
                         </Form.Group>
                         <Form.Group controlId="formValeurConstante">
@@ -208,7 +219,6 @@ function Possessions() {
                                 name="valeurConstante"
                                 value={formData.valeurConstante}
                                 onChange={handleFormChange}
-                                required
                             />
                         </Form.Group>
                         <Button variant="primary" type="submit">
