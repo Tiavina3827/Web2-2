@@ -22,7 +22,7 @@ function Possessions() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetch('http://localhost:3001/possessions')
+        fetch('https://back-api1.onrender.com/possessions')
             .then(response => response.json())
             .then(data => {
                 setPossessions(data);
@@ -61,7 +61,7 @@ function Possessions() {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (modalMode === 'create') {
-            fetch('http://localhost:3001/possession/create', {
+            fetch('https://back-api1.onrender.com/possession/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
@@ -73,7 +73,7 @@ function Possessions() {
                 })
                 .catch(error => console.error('Erreur:', error));
         } else if (modalMode === 'update') {
-            fetch(`http://localhost:3001/possession/${selectedPossession.libelle}/update`, {
+            fetch(`https://back-api1.onrender.com/possession/${selectedPossession.libelle}/update`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
@@ -89,7 +89,7 @@ function Possessions() {
 
     const handleClosePossession = (libelle) => {
         const today = new Date().toISOString();
-        fetch(`http://localhost:3001/possession/${libelle}/update`, {
+        fetch(`https://back-api1.onrender.com/possession/${libelle}/update`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ dateFin: today })

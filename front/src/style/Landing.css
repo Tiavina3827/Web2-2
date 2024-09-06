@@ -1,0 +1,26 @@
+.PossessionBtn{
+    background: aliceblue;
+    padding: 1%;
+    text-decoration: none;
+    border-radius: 10px;
+    color: black;
+}
+.PossessionBtn :hover{
+    color: black;
+    transition: 1s ease;
+    background: #9aacc3;
+    font-weight: bold;
+}
+.container2{
+    width: 80vw;
+    height: 70vh;
+    background: #a3e6dc;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10%;
+    padding: 2%;
+    margin-top: 4% ;
+    margin-left: 4% ;
+}

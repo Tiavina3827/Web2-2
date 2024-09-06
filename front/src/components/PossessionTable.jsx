@@ -1,5 +1,7 @@
 import { Table, Button, Form, Modal } from 'react-bootstrap';
 import '../bootstrap-5.0.2-dist/css/bootstrap.min.css'
+import '../root.css'
+
 function PossessionsTable({
                               possessions,
                               showModal,
