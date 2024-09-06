@@ -9,7 +9,7 @@ const cors = require('cors');
 app.use(cors());
 app.use(express.json());
 
-const dataFilePath = path.join(__dirname, '../Data/db.json');
+const dataFilePath = path.join(__dirname, './Data/db.json');
 let rawData = fs.readFileSync(dataFilePath);
 let data = JSON.parse(rawData);
 
