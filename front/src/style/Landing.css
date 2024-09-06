@@ -24,3 +24,14 @@
     margin-top: 4% ;
     margin-left: 4% ;
 }
+.logo{
+    color: black;
+    font-size: 2rem;
+    font-weight: bold;
+    text-decoration: none;
+}
+.logo :hover{
+    transition: 1s ease;
+    font-weight: bolder;
+    color: #2b2828;
+}
