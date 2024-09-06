@@ -5,7 +5,7 @@ function NavBar(){
     return(
       <nav>
           <Link to="/patrimoine" className="navLinks">Patrimoine' stats</Link>
-          <Link to="/Possession" className="navlinks">Possession's list</Link>
+          <Link to="/Possession" className="navLinks">Possession's list</Link>
       </nav>
     );
 }

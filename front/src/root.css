@@ -24,3 +24,15 @@ nav{
     align-items: center;
     gap: 30%;
 }
+#ValidBtn{
+    justify-items: center;
+    border: none;
+    background: #D4ADFC;
+    padding: 2%;
+    border-radius: 10px;
+}
+#ValidBtn:hover {
+    transition: 1s ease;
+    background: #5C469C;
+    font-weight: bold;
+}

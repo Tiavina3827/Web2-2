@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement } from 'chart.js';
-
+import '../root.css'
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement);
 
 function Patrimoine() {
@@ -107,7 +107,7 @@ function Patrimoine() {
                             onChange={(e) => setEndDate(e.target.value)}
                         />
                     </div>
-                    <button onClick={handleCheckValue} style={{ marginLeft: '10px' }}>Valider</button>
+                    <button onClick={handleCheckValue} id="ValidBtn">Valider</button>
                 </div>
             </div>
         </div>
